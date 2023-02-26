@@ -1,5 +1,6 @@
 
 let todos = [];
+let ihk = [];
 const status = ["offen", "in Bearbeitung", "erledigt"];
 
 function createTodoElement(todo) {
@@ -110,16 +111,28 @@ function changeStatus(id) {
     }
 }
 function getFromApi() {
-    let todoFromApi = fetch("http://localhost:3000",{
+    let todoFromApi
+    fetch("http://localhost:3000/",{
         method: "GET"
     })
         .then((response) => response.json())
-        .then((data) => { return data; });
+        .then((data) => { pfusch(data) });
+        //console.log(todoFromApi + "Bananenbrot");
     return todoFromApi;
+}
+function pfusch(bkl){
+    this.ihk = bkl
+    console.log(this.ihk[0].id)
 }
 
 function loadTodos() {
-    console.log(getFromApi());
+    //console.log(getFromApi());
+    /*let bls = getFromApi();
+    for(let i = 0; i < bls.length; i++){
+        console.log("0");
+    }*/
+    getFromApi()
+
     let todos = localStorage.getItem("todos");
     if (todos) {
         return JSON.parse(todos);
