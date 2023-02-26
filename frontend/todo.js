@@ -109,8 +109,17 @@ function changeStatus(id) {
         saveTodos();
     }
 }
+function getFromApi() {
+    let todoFromApi = fetch("http://localhost:3000",{
+        method: "GET"
+    })
+        .then((response) => response.json())
+        .then((data) => { return data; });
+    return todoFromApi;
+}
 
 function loadTodos() {
+    console.log(getFromApi());
     let todos = localStorage.getItem("todos");
     if (todos) {
         return JSON.parse(todos);

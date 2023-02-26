@@ -1,8 +1,11 @@
 import express from 'express';
 
+
 /** Zentrales Objekt für unsere Express-Applikation */
 const app = express();
-
+const port = 3000;
+/** bodyParser einbinden um req als json zu lesen */
+//var bodyParser = require('body-parser');
 /**
  * Liste aller ToDos. 
  * Wird später durch Datenbank ersetzt!
@@ -22,4 +25,28 @@ let TODOS = [
     },
 ];
 
-// Your code here
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
+app.get('/', (req, res) => {
+    res.send(TODOS)
+})
+
+app.post('/', (req, res) => {
+    TODOS.push(req.express.json());
+    res.send("Todo angelegt")
+})
+app.put('/', (req, res) => {
+    let id = req.bodyParser.json().id
+    TODOS.push(req.express.json());
+    res.send("Todo angepasst")
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
