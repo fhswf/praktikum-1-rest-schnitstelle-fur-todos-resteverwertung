@@ -116,7 +116,7 @@ function getFromApi() {
         method: "GET"
     })
         .then((response) => response.json())
-        .then((data) => { pfusch(data) });
+        .then((data) =>  this.ihk = data);
         //console.log(todoFromApi + "Bananenbrot");
     return todoFromApi;
 }
