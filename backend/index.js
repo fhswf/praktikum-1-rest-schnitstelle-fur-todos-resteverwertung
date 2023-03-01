@@ -10,8 +10,7 @@ const port = 3000;
  * Liste aller ToDos. 
  * Wird später durch Datenbank ersetzt!
  */
-let TODOS = [
-    {
+let TODOS = [{
         "id": 1671056616571,
         "title": "Übung 4 machen",
         "due": "2022-11-12T00:00:00.000Z",
@@ -25,28 +24,4 @@ let TODOS = [
     },
 ];
 
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-  });
-app.get('/', (req, res) => {
-    res.send(TODOS)
-})
-
-app.post('/', (req, res) => {
-    TODOS.push(req.express.json());
-    res.send("Todo angelegt")
-})
-app.put('/', (req, res) => {
-    let id = req.bodyParser.json().id
-    TODOS.push(req.express.json());
-    res.send("Todo angepasst")
-})
-
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+// Your code here
