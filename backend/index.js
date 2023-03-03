@@ -10,8 +10,7 @@ const port = 3000;
  * Liste aller ToDos. 
  * Wird später durch Datenbank ersetzt!
  */
-let TODOS = [
-    {
+let TODOS = [{
         "id": 1671056616571,
         "title": "Übung 4 machen",
         "due": "2022-11-12T00:00:00.000Z",
@@ -28,15 +27,58 @@ let TODOS = [
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
     );
     next();
-  });
+});
 app.get('/', (req, res) => {
+        res.send(TODOS)
+    })
+    // read all todos
+
+app.get('/todos', (req, res) => {
     res.send(TODOS)
 })
 
+// read explicit todo
+
+app.get('/todos/:id', (req, res) => {
+        const { id } = req.params;
+        const todo = TODOS.find(todo => todo.id == id);
+
+        if (todo) {
+            res.json(todo);
+        } else {
+            res.status(404).end();
+        }
+    })
+    //update explicit todo
+
+app.put('/todos/:id', (req, res) => {
+    const { id } = req.params;
+    const todo = TODOS.find(todo => todo.id == id);
+    if (todo) {
+        // Update the todo item
+        const { id, title, due, status } = req.body;
+        if (title) {
+            todo.title = title;
+        }
+        if (id) {
+            todo.id = id;
+        }
+        if (status) {
+            todo.status = status;
+        }
+        if (due) {
+            todo.due = due;
+        }
+        res.send(todo);
+    } else {
+        // Todo item not found
+        res.send('Todo item not found');
+    }
+});
 app.post('/', (req, res) => {
     TODOS.push(req.express.json());
     res.send("Todo angelegt")
