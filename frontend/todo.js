@@ -1,6 +1,6 @@
 
-let todos = [];
-let ihk = [];
+todos = [];
+
 const status = ["offen", "in Bearbeitung", "erledigt"];
 
 function createTodoElement(todo) {
@@ -14,7 +14,7 @@ function createTodoElement(todo) {
          <button class="delete" onclick="deleteTodo(${todo.id})">Löschen</button>`);
 }
 
-function showTodos() {
+function showTodos(todos) {
     let todoList = document.getElementById("todo-list");
 
     // Clear the todo list
@@ -40,15 +40,20 @@ function initForm(event) {
 }
 
 function init() {
-    // Get todos from loacal storage
-    todos = loadTodos();
+    // Get todos from local storage
+    let todos = loadTodos();
+    todos.then((todos) => {
+        showTodos(todos);
+        this.todos = todos; 
+    })
+    
     console.log("Loaded todos: %o", todos);
 
     // Reset the form
     document.getElementById("todo-form").reset();
 
     // Show all todos
-    showTodos();
+
 }
 
 function saveTodo(evt) {
@@ -66,20 +71,20 @@ function saveTodo(evt) {
 
     let index = todos.findIndex(t => t.id === todo.id);
     if (index >= 0) {
-        todos[index] = todo;
+        this.todos[index] = todo;
         console.log("Updating todo: %o", todo);
     } else {
-        todos.push(todo);
+        this.todos.push(todo);
         console.log("Saving new todo: %o", todo);
     }
 
-    showTodos();
+    showTodos(this.todos);
     evt.target.reset();
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("todos", JSON.stringify(this.todos));
 }
 
 function editTodo(id) {
-    let todo = todos.find(t => t.id === id);
+    let todo = this.todos.find(t => t.id === id);
     console.log("Editing todo: %o", todo);
     if (todo) {
         let form = document.getElementById("todo-form");
@@ -91,57 +96,44 @@ function editTodo(id) {
     }
 }
 
-function deleteTodo(id) {
-    let todo = todos.find(t => t.id === id);
+async function deleteTodo(id) {
+    let todo = this.todos.find(t => t.id === id);
     console.log("Deleting todo: %o", todo);
     if (todo) {
-        todos = todos.filter(t => t.id !== id);
-        showTodos();
+        this.todos = this.todos.filter(t => t.id !== id);
+        showTodos(this.todos);
         saveTodos();
+        syncDeleted(id);
     }
 }
 
 function changeStatus(id) {
-    let todo = todos.find(t => t.id === id);
+    let todo = this.todos.find(t => t.id === id);
     console.log("Changing status of todo: %o", todo);
     if (todo) {
         todo.status = (todo.status + 1) % status.length;
-        showTodos();
+        showTodos(this.todos);
         saveTodos();
     }
 }
-function getFromApi() {
-    let todoFromApi
-    fetch("http://localhost:3000/",{
+
+function  syncDeleted(id){
+    fetch("http://localhost:3000/", {
+        method: "DELETE",
+        
+        body: JSON.stringify(id)
+        
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+}
+async function loadTodos() {
+    let todoFromApi = await fetch("http://localhost:3000/", {
         method: "GET"
     })
-        .then((response) => response.json())
-        .then((data) => { pfusch(data) });
-        //console.log(todoFromApi + "Bananenbrot");
-    return todoFromApi;
+    return todoFromApi.json();
 }
-function pfusch(bkl){
-    this.ihk = bkl
-    console.log(this.ihk[0].id)
-}
-
-function loadTodos() {
-    //console.log(getFromApi());
-    /*let bls = getFromApi();
-    for(let i = 0; i < bls.length; i++){
-        console.log("0");
-    }*/
-    getFromApi()
-
-    let todos = localStorage.getItem("todos");
-    if (todos) {
-        return JSON.parse(todos);
-    } else {
-        return [];
-    }
-}
-
 function saveTodos() {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("todos", JSON.stringify(this.todos));
 }
 

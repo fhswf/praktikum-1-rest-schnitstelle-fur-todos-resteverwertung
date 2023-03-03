@@ -27,26 +27,36 @@ let TODOS = [
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "PUT,PATCH,DELETE");
     res.header(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept"
+    
     );
     next();
   });
 app.get('/', (req, res) => {
-    res.send(TODOS)
+    res.send(TODOS);
 })
 
 app.post('/', (req, res) => {
     TODOS.push(req.express.json());
-    res.send("Todo angelegt")
+    res.send("Todo angelegt");
 })
 app.put('/', (req, res) => {
-    let id = req.bodyParser.json().id
+    let id = req.bodyParser.json().id;
     TODOS.push(req.express.json());
-    res.send("Todo angepasst")
+    res.send("Todo angepasst");
 })
 
+app.delete('/', (req, res) =>{
+    console.log(req);
+    let idToDel = req.express.json().id
+    index = indexOf(TODOS.find(({ id }) => id === idToDel));    
+    TODOS.array.splice(index, 1);
+    console.log(TODOS);
+    res.send("Todo geloescht");
+})
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
