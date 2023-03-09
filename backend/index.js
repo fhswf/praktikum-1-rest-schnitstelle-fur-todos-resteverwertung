@@ -33,17 +33,6 @@ let TODOS = [{
 
 // Your code here
 
-// create
-app.post('/todos', (req, res) => {
-    const { id, title, due, status } = req.body;
-
-    if (!req.body.id || !title || !due || !status) {
-        res.status(400).send({ message: 'Missing data' });
-        return;
-    }
-
-    res.send('TODO item created successfully');
-});
 // read all todos
 
 app.get('/todos', (req, res) => {
@@ -59,7 +48,7 @@ app.get('/todos/:id', (req, res) => {
         if (todo) {
             res.json(todo);
         } else {
-            res.status(404).end();
+            res.send('Todo item not found');
         }
     })
     //update explicit todo
@@ -89,19 +78,6 @@ app.put('/todos/:id', (req, res) => {
     }
 });
 
-// delete explicit todo
-
-app.delete('/todos/:id', (req, res) => {
-    const { id } = req.params;
-
-    const todo = TODOS.find(todo => todo.id == id);
-    if (todo) {
-        TODOS.splice(todo, 1);
-        res.send(`ToDo item with ID ${id} has been deleted`);
-    } else {
-        res.send('ToDo item not found');
-    }
-});
 
 app.listen(port, () => {
     console.log(`port listening on port ${port}`)
