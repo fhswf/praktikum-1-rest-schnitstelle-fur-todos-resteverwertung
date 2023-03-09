@@ -35,22 +35,8 @@ let TODOS = [{
 ];
 
 // Your code here
-
-// create
-app.post('/todos', (req, res) => {
-    const { id, title, due, status } = req.body;
-
-    if (!req.body.id || !title || !due || !status) {
-        res.status(400).send({ message: 'Missing data' });
-        return;
-    }
-
-    res.send('TODO item created successfully');
-});
-// read all todos
-
 app.get('/todos', (req, res) => {
-    res.send(TODOS)
+    res.json(TODOS);
 })
 
 // read explicit todo
@@ -60,7 +46,7 @@ app.get('/todos/:id', (req, res) => {
         const todo = TODOS.find(todo => todo.id == id);
 
         if (todo) {
-            res.json(todo);
+            res.status(200).json(todo);
         } else {
             res.status(404).end();
         }
@@ -85,24 +71,10 @@ app.put('/todos/:id', (req, res) => {
         if (due) {
             todo.due = due;
         }
-        res.send(todo);
+        res.status(200).send(todo);
     } else {
         // Todo item not found
         res.send('Todo item not found');
-    }
-});
-
-// delete explicit todo
-
-app.delete('/todos/:id', (req, res) => {
-    const { id } = req.params;
-
-    const todo = TODOS.find(todo => todo.id == id);
-    if (todo) {
-        TODOS.splice(todo, 1);
-        res.send(`ToDo item with ID ${id} has been deleted`);
-    } else {
-        res.send('ToDo item not found');
     }
 });
 
