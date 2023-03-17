@@ -121,7 +121,7 @@ function  syncDeleted(id){
     fetch("http://localhost:3000/", {
         method: "DELETE",
         
-        body: JSON.stringify(id)
+        //body: id
         
     })
     .then(response => response.json())

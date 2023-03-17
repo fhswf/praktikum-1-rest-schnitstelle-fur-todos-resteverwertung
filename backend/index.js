@@ -1,6 +1,5 @@
 import express from 'express';
 
-
 /** Zentrales Objekt für unsere Express-Applikation */
 const app = express();
 const port = 3000;
@@ -10,6 +9,7 @@ const port = 3000;
  * Liste aller ToDos. 
  * Wird später durch Datenbank ersetzt!
  */
+let id = 0;
 let TODOS = [
     {
         "id": 1671056616571,
@@ -24,37 +24,48 @@ let TODOS = [
         "status": 2
     },
 ];
-
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "PUT,PATCH,DELETE");
     res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+
     );
     next();
-  });
+});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
 app.get('/', (req, res) => {
     res.send(TODOS);
 })
-
+app.get('/:id', (req, res) => {
+    const id = req.params.id;
+    const todo = TODOS.find(todo => todo.id == todo);
+    res.send(todo);
+})
 app.post('/', (req, res) => {
-    TODOS.push(req.express.json());
+    const todo = req.body;
+    todo = { id: this.id++ }
+    TODOS.push(todo);
+    console.log(TODOS)
     res.send("Todo angelegt");
 })
-app.put('/', (req, res) => {
-    let id = req.bodyParser.json().id;
-    TODOS.push(req.express.json());
+app.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const { title, due, status } = req.body;
+    const todo = TODOS.find(todo => todo.id == todo);
+    if (todo) {
+        todo.title = title;
+        todo.due = due;
+        todo.status = status;
+    }
     res.send("Todo angepasst");
 })
-
-app.delete('/', (req, res) =>{
-    console.log(req);
-    let idToDel = req.express.json().id
-    index = indexOf(TODOS.find(({ id }) => id === idToDel));    
-    TODOS.array.splice(index, 1);
-    console.log(TODOS);
+app.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    const index = TODOS.findIndex(todo => todo.id === id);
+    TODOS = TODOS.splice(index, 1);
     res.send("Todo geloescht");
 })
 app.listen(port, () => {
