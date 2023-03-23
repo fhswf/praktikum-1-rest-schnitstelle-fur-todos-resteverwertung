@@ -44,9 +44,9 @@ function init() {
     let todos = loadTodos();
     todos.then((todos) => {
         showTodos(todos);
-        this.todos = todos; 
+        this.todos = todos;
     })
-    
+
     console.log("Loaded todos: %o", todos);
 
     // Reset the form
@@ -60,7 +60,7 @@ function saveTodo(evt) {
     evt.preventDefault();
 
     // Get the id from the form. If it is not set, we are creating a new todo.
-    let id = Number.parseInt(evt.target.dataset.id) || Date.now();
+    let id = Date.now();//Number.parseInt(evt.target.dataset.id) || Date.now();
 
     let todo = {
         id,
@@ -81,6 +81,7 @@ function saveTodo(evt) {
     showTodos(this.todos);
     evt.target.reset();
     localStorage.setItem("todos", JSON.stringify(this.todos));
+    syncPost(todo)
 }
 
 function editTodo(id) {
@@ -116,16 +117,28 @@ function changeStatus(id) {
         saveTodos();
     }
 }
-
-function  syncDeleted(id){
-    fetch("http://localhost:3000/", {
-        method: "DELETE",
-        
-        //body: id
-        
+async function syncPost(todo) {
+    fetch(`http://localhost:3000/${id}`, {
+        method: 'POST',
+        body: JSON.stringify(todo)
     })
-    .then(response => response.json())
-    .then(data => console.log(data))
+        .then(response => response.json())
+        .then(data => console.log(data))
+}
+async function syncPut(todo) {
+    fetch(`http://localhost:3000/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(todo)
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+}
+async function syncDeleted(id) {
+    fetch(`http://localhost:3000/${id}`, {
+        method: "DELETE"
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
 }
 async function loadTodos() {
     let todoFromApi = await fetch("http://localhost:3000/", {

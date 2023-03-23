@@ -46,10 +46,10 @@ app.get('/:id', (req, res) => {
 })
 app.post('/', (req, res) => {
     const todo = req.body;
-    todo = { id: this.id++ }
+    //todo = { id: this.id++ }
     TODOS.push(todo);
     console.log(TODOS)
-    res.send("Todo angelegt");
+    res.send('"Todo angelegt"');
 })
 app.put('/:id', (req, res) => {
     const id = req.params.id;
@@ -60,13 +60,13 @@ app.put('/:id', (req, res) => {
         todo.due = due;
         todo.status = status;
     }
-    res.send("Todo angepasst");
+    res.send('"Todo angepasst"');
 })
 app.delete('/:id', (req, res) => {
     const id = req.params.id;
     const index = TODOS.findIndex(todo => todo.id === id);
     TODOS = TODOS.splice(index, 1);
-    res.send("Todo geloescht");
+    res.send('"Todo geloescht"');
 })
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
